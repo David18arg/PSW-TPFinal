@@ -1,0 +1,6 @@
+empresa:
+    resource: "@EmpresaBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+
