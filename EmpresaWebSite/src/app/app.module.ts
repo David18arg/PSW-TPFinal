@@ -11,6 +11,12 @@ import { GestionVehiculosComponent } from './components/gestion-vehiculos/gestio
 import { ReservaComponent } from './components/reserva/reserva.component';
 import { GestionUsuariosComponent } from './components/gestion-usuarios/gestion-usuarios.component';
 import { NovedadesComponent } from './components/novedades/novedades.component';
+import { RegistroComponent } from './components/registro/registro.component';
+import { AuthenticationService } from './services/authentication.service';
+import { NovedadesService } from './services/novedades.service';
+import { ReservasService } from './services/reservas.service';
+import { UsuariosService } from './services/usuarios.service';
+import { VehiculosService } from './services/vehiculos.service';
 
 @NgModule({
   declarations: [
@@ -23,13 +29,20 @@ import { NovedadesComponent } from './components/novedades/novedades.component';
     GestionVehiculosComponent,
     ReservaComponent,
     GestionUsuariosComponent,
-    NovedadesComponent
+    NovedadesComponent,
+    RegistroComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    AuthenticationService,
+    NovedadesService,
+    ReservasService,
+    UsuariosService,
+    VehiculosService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
