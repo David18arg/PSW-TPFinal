@@ -3,4 +3,19 @@ empresa:
     type:     annotation
     prefix:   /
 
+empresa_novedad:
+    resource: "@EmpresaBundle/Controller/NovedadController.php"
+    type:     annotation
+
+empresa_reserva:
+    resource: "@EmpresaBundle/Controller/ReservaController.php"
+    type:     annotation
+    
+empresa_usuario:
+    resource: "@EmpresaBundle/Controller/UsuarioController.php"
+    type:     annotation
+    
+empresa_vehiculo:
+    resource: "@EmpresaBundle/Controller/VehiculoController.php"
+    type:     annotation    
 
