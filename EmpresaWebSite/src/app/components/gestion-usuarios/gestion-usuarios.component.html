@@ -1,3 +1,119 @@
-<p>
-  gestion-usuarios works!
-</p>
+<div class="jumbotron">
+  <div class="row mt-8">
+    <div class="col-md">
+      <h1 class="display-2">Gestion de Usuarios</h1>
+      <div class="card">
+        <div class="card-header">
+          <!--Agregar y mostrar Usuarios-->
+          <button type="button" id="btnAgregarUsuario" class="btn btn-lg btn-outline-primary" (click)="open(content1)">Agregar nuevo Usuario</button>
+          <button type="button" id="btnMostrarUsuarios" class="btn btn-lg btn-outline-primary" (click)="mostrarUsuarios()">Mostrar Usuarios</button>
+        </div>
+        <div class="card-body">
+          <!--Tabla de Usuarios-->
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <thead>
+              <tr>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th>DNI</th>
+                <th>Email</th>
+                <th>telefono</th>
+                <th>usuario</th>
+                <th>perfil</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let us of usuariosGestion">
+                <td>{{ us.nombres }}</td>
+                <td>{{ us.apellidos }}</td>
+                <td>{{ us.dni }}</td>
+                <td>{{ us.email }}</td>
+                <td>{{ us.telefono }}</td>
+                <td>{{ us.usuario }}</td>
+                <td>{{ us.perfil }}</td>
+                <td>
+                  <button type="button" id="btnDetalleUsuario" class="btn btn-lg btn-outline-primary" (click)="open(content) ; seleccionarUsuario(us)">
+                    Modificar
+                  </button>
+                  <button type="button" id="btnEliminarUsuario" class="btn btn-lg btn-outline-primary" (click)="eliminarUsuario(us)">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+        </div>
+      </div>
+      <!--Modal-Modificar-->
+      <ng-template #content let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <h4 class="modal-title">Modificar Datos de Usuario</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="modificarNombre">Nombre:</label>
+              <input type="text" class="form-control" id="modificarNombre" name="modificarNombre" [(ngModel)]="usuarioGestion.nombre">
+              <label for="modificarApellido">Apellido:</label>
+              <input type="text" class="form-control" id="modificarApellido" name="modificarApellido" [(ngModel)]="usuarioGestion.apellido">
+              <label for="modificarDni">DNI:</label>
+              <input type="number" class="form-control" id="modificarDni" name="modificarDni" [(ngModel)]="usuarioGestion.dni">
+              <label for="modificarEmail">Email:</label>
+              <input type="email" class="form-control" id="modificarEmail" name="modificarEmail" [(ngModel)]="usuarioGestion.email">
+              <label for="modificarTelefono">Telefono:</label>
+              <input type="number" class="form-control" id="modificarTelefono" name="modificarTelefono" [(ngModel)]="usuarioGestion.telefono">
+              <label for="modificarUsuario">Usuario:</label>
+              <input type="text" class="form-control" id="modificarUsuario" name="modificarUsuario" [(ngModel)]="usuarioGestion.usuario">
+              <label for="modificarPassword">Contraseña:</label>
+              <input type="password" class="form-control" id="modificarPassword" name="modificarPassword" [(ngModel)]="usuarioGestion.password">
+              <label for="modificarPerfil">Perfil:</label>
+              <select class="form-control" id="modificarPerfil" [(ngModel)]="usuarioGestion.perfil" name="modificarPerfil">
+                <option>Administrativo</option>
+                <option>Cliente</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="actualizarUsuario();c('Close click')">Modificar</button>
+        </div>
+      </ng-template>
+      <!--Modal-Agregar-->
+      <ng-template #content1 let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <h4 class="modal-title">Alta de Usuario</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="altaNombre">Ingrese nombre:</label>
+              <input type="text" class="form-control" id="altaNombre" name="altaNombre" [(ngModel)]="usuarioGestion.nombre">
+              <label for="altaApellido">Ingrese apellido:</label>
+              <input type="text" class="form-control" id="altaApellido" name="altaApellido" [(ngModel)]="usuarioGestion.apellido">
+              <label for="altaDni">Ingrese DNI:</label>
+              <input type="number" class="form-control" id="altaDni" name="altaDni" [(ngModel)]="usuarioGestion.dni">
+              <label for="altaEmail">Ingrese Email:</label>
+              <input type="email" class="form-control" id="altaEmail" name="altaEmail" [(ngModel)]="usuarioGestion.email">
+              <label for="altaTelefono">Ingrese Telefono:</label>
+              <input type="number" class="form-control" id="altaTelefono" name="altaTelefono" [(ngModel)]="usuarioGestion.telefono">
+              <label for="altaUsuario">Ingrese Usuario:</label>
+              <input type="text" class="form-control" id="altaUsuario" name="altaUsuario" [(ngModel)]="usuarioGestion.usuario">
+              <label for="altaPassword">Ingrese Contraseña:</label>
+              <input type="password" class="form-control" id="altaPassword" name="altaPassword" [(ngModel)]="usuarioGestion.password">
+              <label for="altaPerfil">Seleccione Perfil:</label>
+              <select class="form-control" id="altaPerfil" [(ngModel)]="usuarioGestion.perfil" name="altaPerfil">
+                <option>Administrativo</option>
+                <option>Cliente</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-info" (click)="enviarUsuario();c('Close click')">Agregar Usuario</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
