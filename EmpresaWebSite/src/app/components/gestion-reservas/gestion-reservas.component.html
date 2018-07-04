@@ -1,60 +1,63 @@
 <div class="row col-12 p-2">
-  <button class="btn btn-sm btn-success" (click)="modalRserva()" data-toggle='modal' data-target='#modalDetalles'>INSCRIPCION</button>
-  <a class="btn btn-sm btn-primary ml-2" [routerLink]="['/categoria']">ADMINISTRAR CATEGORIAS</a>
+  <button class="btn btn-sm btn-success" (click)="modalReserva()" data-toggle="modal" data-target="#modalDetalles">REGISTRAR RESERVA</button>
 </div>
-<div class="card-body table-responsive p-0 m-0">
+<div class="card-body table-responsive">
   <table class="table table-striped table-bordered table-hover text-center" [mfData]="reservas | dataFilter : filterQuery"
     #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
     <thead>
       <tr class="thead-dark">
-        <th colspan="2">
+        <th colspan="3">
           <label>Filtrar por Marca y Modelo :</label>
         </th>
-        <th colspan="3">
+        <th colspan="4">
           <input class="form-control" [(ngModel)]="filterQuery" />
         </th>
       </tr>
       <tr class="text-center">
         <th style="width: 15%">
-          <mfDefaultSorter by="nombres">Nombres</mfDefaultSorter>
-        </th>
-        <th style="width: 15%">
-          <mfDefaultSorter by="apellido">Apellido</mfDefaultSorter>
-        </th>
-        <th style="width: 15%">
-          <mfDefaultSorter by="marca">Marca</mfDefaultSorter>
-        </th>
-        <th style="width: 15%">
-          <mfDefaultSorter by="modelo">Modelo</mfDefaultSorter>
+          <mfDefaultSorter by="nombres">Apellido y Nombres</mfDefaultSorter>
         </th>
         <th style="width: 10%">
-          <mfDefaultSorter by="modelo">Fecha Renta</mfDefaultSorter>
+          <mfDefaultSorter by="dias">Dias</mfDefaultSorter>
         </th>
         <th style="width: 15%">
-          <mfDefaultSorter by="modelo">Estado</mfDefaultSorter>
+          <mfDefaultSorter by="costoRenta">Consto Renta</mfDefaultSorter>
         </th>
         <th style="width: 15%">
-          <mfDefaultSorter by="">Detalles</mfDefaultSorter>
+          <mfDefaultSorter by="fechaRenta">Fecha Renta</mfDefaultSorter>
+        </th>
+        <th style="width: 15%">
+          <mfDefaultSorter by="estado">Estado</mfDefaultSorter>
+        </th>
+        <th style="width: 15%">
+          <mfDefaultSorter by="">Vehiculo</mfDefaultSorter>
+        </th>
+        <th style="width: 15%">
+          <mfDefaultSorter by="">Opciones</mfDefaultSorter>
         </th>
       </tr>
     </thead>
     <tbody class="text-center">
       <tr *ngFor="let item of mf.data" class="text-light font-weight-bold">
-        <td>{{item.usuario.nombres}}</td>
-        <td>{{item.usuario.apellido}}</td>
-        <td>{{item.vehiculo.marca}}</td>
-        <td>{{item.vehiculo.modelo}}</td>
-        <td>{{item.fecha.timestamp * 1000.0047 | date:'dd/MM/yyyy'}}</td>
+        <td>{{item.usuario.apellido}}, {{item.usuario.nombres}}</td>
+        <td>{{item.dias}}</td>
+        <td>{{item.costoRenta}}</td>
+        <td>{{item.fechaRenta.timestamp * 1000.0047 | date:'dd/MM/yyyy hh:mm:ss'}}</td>
         <td>{{item.estado}}</td>
         <td>
-          <button type="button" class="btn btn-outline-info my-2 my-sm-0" (click)="seleccionarInscripcion(item)" data-toggle='modal' data-target='#modalDetalles'>Modificar</button>
+          <button type="button" class="btn btn-outline-success my-2 my-sm-0" data-toggle='modal' data-target='#modalDetalles'>Detalles</button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger my-2 my-sm-0" (click)="cambiarEstado(item)">{{item.estado == 'Aceptado' ? 'EN ESPERA':'ACEPTAR' }}</button>
+          <button type="button" class="btn btn-outline-info my-2 my-sm-0" (click)="seleccionarInscripcion(item)" data-toggle='modal'
+            data-target='#modalDetalles'>Modificar</button>
           <button type="button" class="btn btn-outline-danger my-2 my-sm-0" (click)="eliminarInscripcion(item)">Eliminar</button>
         </td>
       </tr>
     </tbody>
     <tfoot class="m-0 p-0">
       <tr class="m-0 p-0">
-        <th colspan="5" class="m-0 p-0">
+        <th colspan="7" class="m-0 p-0">
           <mfBootstrapPaginator class="m-0 p-0"></mfBootstrapPaginator>
         </th>
       </tr>
@@ -68,61 +71,75 @@
     <div class="modal-content bg-dark text-white">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">DETALLES DE LA RESERVA</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+        <button type="button" class="close" (click)="empresaForm.reset()" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form #inscripcionForm="ngForm" (ngSubmit)="enviarFormulario(); inscripcionForm.reset()">
+        <form #empresaForm="ngForm" (ngSubmit)="enviarFormulario(); empresaForm.reset()">
           <div class="form-group row p-0 m-0">
-            <label for="name" class="col-form-label">Categoria :</label>
-            <select id="categoria" required class="col-md-6 form-control" name="categoria" [(ngModel)]="inscripcion.categoria" #categoria="ngModel">
-              <option [ngValue]="cat" *ngFor="let cat of categorias">{{cat.nombre}}</option>
+            <label for="vehiculo" class="col-form-label">Vehiculos :</label>
+            <select id="vehiculo" required class="col-md-6 form-control" name="vehiculo" [(ngModel)]="reserva.vehiculo" #vehiculo="ngModel">
+              <option [ngValue]="ve" *ngFor="let ve of vehiculos">
+                <img width="45px" height="45px" src="http://localhost/EmpresaWebService/web/uploads/images/{{ve.pathimagen}}">{{ve.marca}} - {{ve.modelo}} - {{ve.patente}}</option>
             </select>
-            <div [hidden]="categoria.valid || categoria.pristine" class="alert alert-danger">
-              Categoria requerida
+            <div [hidden]="vehiculo.valid || vehiculo.pristine" class="alert alert-danger">
+              Vehiculo requerido
             </div>
           </div>
           <div class="form-group row p-0 m-0">
-            <label for="apellido" class="col-form-label">Apellido :</label>
-            <input type="text" name="apellido" id="apellido" minlength="4" #apellido="ngModel" required class="form-control" [(ngModel)]="inscripcion.apellido">
-            <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="alert alert-danger">
-              <div *ngIf="apellido.errors.required">
-                Apellido requerido
-              </div>
-              <div *ngIf="apellido.errors.minlength">
-                Apellido debe contener almenos 4 caracteres.
-              </div>
+            <label for="usuario" class="col-form-label">Usuarios :</label>
+            <select id="usuario" required class="col-md-6 form-control" name="usuario" [(ngModel)]="reserva.usuario" #usuario="ngModel">
+              <option [ngValue]="user" *ngFor="let user of usuarios">{{user.apellido}}, {{user.nombres}}</option>
+            </select>
+            <div [hidden]="usuario.valid || usuario.pristine" class="alert alert-danger">
+              Usuario requerido
             </div>
           </div>
           <div class="form-group row p-0 m-0">
-            <label for="nombres" class="col-form-label">Nombres :</label>
-            <input type="text" name="nombres" id="nombres" minlength="4" #nombres="ngModel" required class="form-control" [(ngModel)]="inscripcion.nombres">
-            <div *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)" class="alert alert-danger">
-              <div *ngIf="nombres.errors.required">
-                Nombres requerido
-              </div>
-              <div *ngIf="nombres.errors.minlength">
-                Nombres debe contener almenos 4 caracteres.
+            <label for="dias" class="col-form-label">Dias :</label>
+            <input type="number" name="dias" id="dias" #dias="ngModel" required class="form-control" [(ngModel)]="reserva.dias">
+            <div *ngIf="dias.invalid && (dias.dirty || dias.touched)" class="alert alert-danger">
+              <div *ngIf="dias.errors.required">
+                Dias requerido
               </div>
             </div>
           </div>
           <div class="form-group row p-0 m-0">
-            <label for="fecha" class="col-md-6 col-form-label">Fecha :</label>
+            <label for="costo" class="col-form-label">Costo Renta :</label>
+            <input type="number" name="costo" id="costo" #costo="ngModel" required class="form-control" [(ngModel)]="reserva.costoRenta">
+            <div *ngIf="costo.invalid && (costo.dirty || costo.touched)" class="alert alert-danger">
+              <div *ngIf="costo.errors.required">
+                Costo Renta requerido
+              </div>
+            </div>
+          </div>
+          <div class="form-group row p-0 m-0">
+            <label for="fecha" class="col-md-6 col-form-label">Fecha Renta :</label>
             <input id="fecha" type="date" name="fecha" #fecha="ngModel" class="form-control mr-4" [(ngModel)]="fech" (ngModelChange)="actualizarFecha()"
               required>
             <div [hidden]="fecha.valid || fecha.pristine" class="alert alert-danger">
               Fecha requerida
             </div>
           </div>
+          <div class="form-group row p-0 m-0">
+            <label for="estado" class="col-form-label">Estado :</label>
+            <select id="estado" required class="col-md-6 form-control" name="estado" [(ngModel)]="reserva.estado" #estado="ngModel">
+              <option [value]="Aceptado">Aceptado</option>
+              <option [value]="Pendiente">Pendiente</option>
+            </select>
+            <div [hidden]="estado.valid || estado.pristine" class="alert alert-danger">
+              Estado requerido
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!inscripcionForm.form.valid" (click)="inscripcionForm.onSubmit()" 
-          data-dismiss="modal">Modificar Inscripcion</button>
-        <button *ngIf="btnAgregar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!inscripcionForm.form.valid" (click)="inscripcionForm.onSubmit()"
-          data-dismiss="modal">Realizar Inscripcion</button>
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-dismiss="modal">Cerrar</button>
+        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid"
+          (click)="empresaForm.onSubmit()" data-dismiss="modal">Modificar Inscripcion</button>
+        <button *ngIf="btnAgregar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid"
+          (click)="empresaForm.onSubmit()" data-dismiss="modal">Realizar Inscripcion</button>
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" (click)="empresaForm.reset()" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

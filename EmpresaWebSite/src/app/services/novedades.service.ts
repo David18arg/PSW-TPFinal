@@ -17,6 +17,12 @@ export class NovedadesService {
     .map(res => res.json());
   }
 
+  getReservas() {
+    // petición por get a esa url de un api rest de empresa de pasajes
+    return this._http.get('http://localhost/EmpresaWebService/web/app_dev.php/reserva/')
+    .map(res => res.json());
+  }
+
   createNovedad(novedad: Novedad) {
     const headers = new Headers({ 'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});

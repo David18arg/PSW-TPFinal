@@ -1,28 +1,22 @@
-<header class="row">
-  <nav class="navbar navbar-expand-md fixed-top mt-4 py-0">
+<header *ngIf="!authenticationService.userLoggedIn" class="col-12">
+  <nav class="navbar navbar-expand-md mce-fixed-width mt-0 py-0">
     <a class="navbar-brand" href="#">Carousel</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item nav-link active">
-          <a class="nav-link nav-link" [routerLink]="['home']">Inicio <span class="sr-only">(current)</span></a>
+          <a class="nav-link nav-link" [routerLink]="['home']">Inicio
+            <span class="sr-only">(current)</span>
+          </a>
         </li>
         <li class="nav-item nav-link">
-          <a *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Cliente'" class="nav-link" [routerLink]="['reservas']">Reserve</a>
+          <a class="nav-link" [routerLink]="['reserva']">Reserve</a>
         </li>
         <li class="nav-item nav-link">
-          <a *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Cliente'" class="nav-link" [routerLink]="['novedad']">Novedad</a>
-        </li>
-        <li class="nav-item nav-link">
-          <a *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Administrativo'" class="nav-link" [routerLink]="['gestion-vehiculos']">Gestion de Vehiculos</a>
-        </li>
-        <li class="nav-item nav-link">
-          <a *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Administrativo'" class="nav-link" [routerLink]="['gestion-usuarios']">Gestion de Usuarios</a>
-        </li>
-        <li class="nav-item nav-link">
-          <a *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Administrativo'" class="nav-link" [routerLink]="['gestion-reservas']">Gestion de Reservas</a>
+          <a class="nav-link" [routerLink]="['novedades']">Novedad</a>
         </li>
       </ul>
       <div class="row p-0">
@@ -36,8 +30,107 @@
   </nav>
 </header>
 
-<main role="main">
-  <div id="myCarousel" class="carousel slide" data-ride="carousel">  
+<header *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Cliente'" class="row">
+  <nav class="navbar navbar-expand-md fixed-top mt-4 py-0">
+    <a class="navbar-brand" href="#">Carousel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item nav-link active">
+          <a class="nav-link nav-link" [routerLink]="['home']">Inicio
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['reserva']">Reserve</a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['novedades']">Novedad</a>
+        </li>
+      </ul>
+      <div class="row p-0">
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['login']">Ingresar</a>
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['registro']">Registrarse</a>
+        <a *ngIf="authenticationService.userLoggedIn" class="nav-link" [routerLink]="['login']" (click)="logout()">
+          {{authenticationService.userLogged.usuario }} (Salir)
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<header *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Administrativo'" class="row">
+  <nav class="navbar navbar-expand-md fixed-top mt-4 py-0">
+    <a class="navbar-brand" href="#">Carousel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item nav-link active">
+          <a class="nav-link nav-link" [routerLink]="['home']">Inicio
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['gestion-vehiculos']">Gestion de Vehiculos</a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['gestion-reservas']">Gestion de Reservas</a>
+        </li>
+      </ul>
+      <div class="row p-0">
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['login']">Ingresar</a>
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['registro']">Registrarse</a>
+        <a *ngIf="authenticationService.userLoggedIn" class="nav-link" [routerLink]="['login']" (click)="logout()">
+          {{authenticationService.userLogged.usuario }} (Salir)
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<header *ngIf="authenticationService.userLoggedIn && authenticationService.userLogged.perfil === 'Administrador'" class="row">
+  <nav class="navbar navbar-expand-md fixed-top mt-4 py-0">
+    <a class="navbar-brand" href="#">Carousel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item nav-link active">
+          <a class="nav-link nav-link" [routerLink]="['home']">Inicio
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['gestion-vehiculos']">Gestion de Vehiculos</a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['gestion-usuarios']">Gestion de Usuarios</a>
+        </li>
+        <li class="nav-item nav-link">
+          <a class="nav-link" [routerLink]="['gestion-reservas']">Gestion de Reservas</a>
+        </li>
+      </ul>
+      <div class="row p-0">
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['login']">Ingresar</a>
+        <a *ngIf="!authenticationService.userLoggedIn" class="nav-link col-md-6 p-0 m-0" [routerLink]="['registro']">Registrarse</a>
+        <a *ngIf="authenticationService.userLoggedIn" class="nav-link" [routerLink]="['login']" (click)="logout()">
+          {{authenticationService.userLogged.usuario }} (Salir)
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!--main role="main">
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
       <li data-target="#myCarousel" data-slide-to="1"></li>
@@ -49,8 +142,11 @@
         <div class="container">
           <div class="carousel-caption text-left">
             <h1>Example headline.</h1>
-            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-            <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.
+              Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+            <p>
+              <a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a>
+            </p>
           </div>
         </div>
       </div>
@@ -59,8 +155,11 @@
         <div class="container">
           <div class="carousel-caption">
             <h1>Another example headline.</h1>
-            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-            <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.
+              Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+            <p>
+              <a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a>
+            </p>
           </div>
         </div>
       </div>
@@ -69,8 +168,11 @@
         <div class="container">
           <div class="carousel-caption text-right">
             <h1>One more for good measure.</h1>
-            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-            <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.
+              Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+            <p>
+              <a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a>
+            </p>
           </div>
         </div>
       </div>
@@ -84,4 +186,4 @@
       <span class="sr-only">Next</span>
     </a>
   </div>
-</main>    
+</main-->

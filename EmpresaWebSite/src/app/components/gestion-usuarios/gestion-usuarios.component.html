@@ -1,88 +1,206 @@
-<div class="card bg-dark text-white">
-  <div class="card-header">
-    <h5 class="card-title m-0">Punto - 3 Venta de Pasajes</h5>
-  </div>
-  <div class="card-body">
-    <form class="form" #empresaForm="ngForm" name="empresaForm" (ngSubmit)="enviarFormulario(); empresaForm.reset()">
-      <div class="form-group row">
-        <label for="dni" class="col-md-6">DNI :</label>
-        <input id="dni" minlength="7" maxlength="8" #dni="ngModel" required type="text" name="dni" class="col-md-6 form-control" [(ngModel)]="pasaje.dni">
-        <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="alert alert-danger">
-          <div *ngIf="dni.errors.required">
-            DNI requerido
-          </div>
-          <div *ngIf="dni.errors.minlength">
-            DNI debe contener almenos 7 digitos.
-          </div>
-          <div *ngIf="dni.errors.maxlength">
-            DNI debe contener maximo 8 digitos.
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="precio" class="col-md-6">Precio :</label>
-        <input id="precio" minlength="1" maxlength="12" #precio="ngModel" required type="number" name="precio" class="col-md-6 form-control" [(ngModel)]="pasaje.precio" (ngModelChange)="calcularPrecio()">
-        <div *ngIf="precio.invalid && (precio.dirty || precio.touched)" class="alert alert-danger">
-          <div *ngIf="precio.errors.required">
-            Precio requerido
-          </div>
-          <div *ngIf="precio.errors.minlength">
-            Precio debe contener almenos 1 digito.
-          </div>
-          <div *ngIf="precio.errors.maxlength">
-            Precio no debe superar los 12 caracteres.
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="categoria" class="col-md-6" for="seleccion">Categoria del pasajero: </label>
-        <select id="categoria" name="categoria" required #categoria="ngModel" class="col-md-6 form-control" [(ngModel)]="seleccion" (ngModelChange)="calcularPrecio()">
-          <option [ngValue]="cat" *ngFor="let cat of categorias">{{cat.tipo}}</option>
-        </select>
-        <div [hidden]="categoria.valid || categoria.pristine" class="alert alert-danger">
-          Categoria del pasajero requerida
-        </div>
-      </div>
-      <div>
-        <button *ngIf="btnVenta" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Venta</button>
-        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Modificar Venta</button>
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" (click)="limpiarCampos()">Limpiar Campos</button>
-      </div>
-    </form>
-  </div>
-  <div class="card-footer p-2">
-    <div *ngIf="msjDetalleVisible" class="row">
-      <label class="col-12 ">Detalle de Transaccion :</label>
-      <label class="col-12 ">DNI : {{ pasaje.dni }}</label>
-      <label class="col-12 ">Categoria : {{ seleccion.tipo }}</label>
-      <label class="col-12 ">Descuento : {{ pasaje.descuento }} %</label>
-      <label class="col-12 ">PrecioFinal: $ {{ pasaje.precioFinal }}</label>
-    </div>
-  </div>
+<div class="row col-12 p-2">
+  <button class="btn btn-sm btn-success" (click)="modalRserva()" data-toggle='modal' data-target='#modalDetalles'>REGISTRAR USUARIO</button>
 </div>
-
 <div class="card-body table-responsive p-0 m-0">
-  <table class="table table-striped table-bordered table-hover text-center">
+  <table class="table table-striped table-bordered table-hover text-center" [mfData]="usuarios | dataFilter : filterQuery"
+    #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
     <thead>
       <tr class="thead-dark">
-        <th style="width: 20%">DNI</th>
-        <th style="width: 20%">Precio</th>
-        <th style="width: 20%">Descuento</th>
-        <th style="width: 20%">PrecioFinal</th>
-        <th style="width: 20%">Opciones</th>
+        <th colspan="4">
+          <label>Filtrar por Marca y Modelo :</label>
+        </th>
+        <th colspan="5">
+          <input class="form-control" [(ngModel)]="filterQuery" />
+        </th>
+      </tr>
+      <tr class="text-center">
+        <th style="width: 10%">
+          <mfDefaultSorter by="nombres">Nombres</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="apellido">Apellido</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="dni">DNI</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="email">Email</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="telefono">Telefono</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="usuario">Usuario</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="clave">Clave</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+          <mfDefaultSorter by="perfil">Perfil</mfDefaultSorter>
+        </th>
+        <th style="width: 15%">
+          <mfDefaultSorter by="">Opciones</mfDefaultSorter>
+        </th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let item of pasajes" class="text-light font-weight-bold">
-        <td scope="col">{{item.dni}}</td>
-        <td scope="col">$ {{item.precio}}</td>
-        <td scope="col">{{item.descuento}} %</td>
-        <td scope="col">{{item.precioFInal}}</td>
-        <td>
-          <button class="btn btn-outline-warning my-2 my-sm-0" (click)="elegirPasaje(item)">Modificar</button>
-          <button class="btn btn-outline-danger my-2 my-sm-0" (click)="eliminarPasaje(item)">Eliminar</button>
+    <tbody class="text-center">
+      <tr *ngFor="let item of mf.data" class="text-dark font-weight-bold">
+        <td *ngIf="item.perfil != 'Administrador'">{{item.nombres}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.apellido}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.dni}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.email}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.telefono}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.usuario}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.password}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">{{item.perfil}}</td>
+        <td *ngIf="item.perfil != 'Administrador'">
+          <button type="button" class="btn btn-outline-info my-2 my-sm-0" (click)="seleccionarUsuario(item)" data-toggle='modal' data-target='#modalDetalles'>Modificar</button>
+          <button type="button" class="btn btn-outline-danger my-2 my-sm-0" (click)="eliminarUsuario(item)">Eliminar</button>
         </td>
       </tr>
     </tbody>
+    <tfoot class="m-0 p-0">
+      <tr class="m-0 p-0">
+        <th colspan="9" class="m-0 p-0">
+          <mfBootstrapPaginator class="m-0 p-0"></mfBootstrapPaginator>
+        </th>
+      </tr>
+    </tfoot>
   </table>
+</div>
+
+<div class="modal fade" id="modalDetalles" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">DETALLES DEL USUARIo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form" #empresaForm="ngForm" name="empresaForm" (ngSubmit)="enviarFormulario(); empresaForm.reset()">
+          <div *ngIf="empresaForm.form.valid">
+            Usuario se registro exitosamente.
+          </div>
+          <div class="form-group row">
+            <label for="usuario" class="col-md-6">Usuario :</label>
+            <input id="usuario" minlength="4" #usuario="ngModel" required type="text" name="email" (change)="consultarUsuario()" class="col-md-6 form-control"
+              [(ngModel)]="usuario.usuario">
+            <div *ngIf="usuario.invalid && (usuario.dirty || usuario.touched)" class="alert alert-danger">
+              <div *ngIf="usuario.errors.required">
+                Usuario requerido
+              </div>
+              <div *ngIf="usuario.errors.minlength">
+                Usuario debe contener almenos 4 digito.
+              </div>
+              <div *ngIf="userExiste">
+                Usuario ya existe, intente con otro.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="password" class="col-md-6">Contraseña :</label>
+            <input id="password" minlength="4" #password="ngModel" required type="password" name="email" class="col-md-6 form-control"
+              [(ngModel)]="usuario.password">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+              <div *ngIf="password.errors.required">
+                Contraseña requerido
+              </div>
+              <div *ngIf="password.errors.minlength">
+                Contraseña debe contener almenos 4 digitos.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="apellido" class="col-md-6">Apellido :</label>
+            <input id="apellido" minlength="4" #apellido="ngModel" required type="text" name="apellido" class="col-md-6 form-control"
+              [(ngModel)]="usuario.apellido">
+            <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="alert alert-danger">
+              <div *ngIf="precio.errors.required">
+                Apellido requerido
+              </div>
+              <div *ngIf="precio.errors.minlength">
+                Apellido debe contener almenos 4 caracteres.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="nombres" class="col-md-6">Nombres :</label>
+            <input id="nombres" minlength="4" #nombres="ngModel" required type="text" name="nombres" class="col-md-6 form-control" [(ngModel)]="usuario.nombres">
+            <div *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)" class="alert alert-danger">
+              <div *ngIf="nombres.errors.required">
+                Nombres requerido
+              </div>
+              <div *ngIf="nombres.errors.minlength">
+                Nombres debe contener almenos 4 caracteres.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="dni" class="col-md-6">DNI :</label>
+            <input id="dni" minlength="7" maxlength="8" #dni="ngModel" required type="text" name="dni" class="col-md-6 form-control"
+              [(ngModel)]="usuario.dni">
+            <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="alert alert-danger">
+              <div *ngIf="dni.errors.required">
+                DNI requerido
+              </div>
+              <div *ngIf="dni.errors.minlength">
+                DNI debe contener almenos 7 digitos.
+              </div>
+              <div *ngIf="dni.errors.maxlength">
+                DNI debe contener maximo 8 digitos.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="email" class="col-md-6">Email :</label>
+            <input id="email" minlength="4" #email="ngModel" required type="email" name="email" class="col-md-6 form-control" [(ngModel)]="usuario.email">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+              <div *ngIf="email.errors.required">
+                Email requerido
+              </div>
+              <div *ngIf="email.errors.minlength">
+                Email debe contener almenos 4 caracteres.
+              </div>
+              <div *ngIf="email.errors.email">
+                Email no valido.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="telefono" class="col-md-6">Telefono :</label>
+            <input id="telefono" minlength="7" #telefono="ngModel" required type="number" name="telefono" class="col-md-6 form-control"
+              [(ngModel)]="usuario.telefono">
+            <div *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)" class="alert alert-danger">
+              <div *ngIf="telefono.errors.required">
+                Telefono requerido
+              </div>
+              <div *ngIf="telefono.errors.minlength">
+                Telefono debe contener almenos 7 digitos.
+              </div>
+            </div>
+          </div>
+          <div class="form-group row p-0 m-0">
+            <label for="perfil" class="col-form-label">Perfil :</label>
+            <select id="perfil" required class="col-md-6 form-control" name="perfil" [(ngModel)]="usuario.perfil" #perfil="ngModel">
+              <option [value]="Aceptado">Administrativo</option>
+              <option [value]="Pendiente">Cliente</option>
+            </select>
+            <div [hidden]="perfil.valid || perfil.pristine" class="alert alert-danger">
+                Perfil requerido
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid"
+          (click)="empresaForm.onSubmit()" data-dismiss="modal">Modificar Usuario</button>
+        <button *ngIf="btnAgregar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid"
+          (click)="empresaForm.onSubmit()" data-dismiss="modal">Agregar Usuario</button>
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>

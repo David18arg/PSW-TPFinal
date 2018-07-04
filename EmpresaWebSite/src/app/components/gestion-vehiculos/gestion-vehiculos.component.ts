@@ -14,6 +14,13 @@ export class GestionVehiculosComponent implements OnInit {
   public vehiculo: Vehiculo;
   public vehiculos: Array<Vehiculo>;
   public formData: FormData;
+  public filterQuery = '';
+  public rowsOnPage = 4;
+  public sortBy = 'fechaRenta';
+  public sortOrder = 'asc';
+  public btnAgregar: boolean;
+  public btnModificar: boolean;
+  public fech;
 
   constructor(private servicio: VehiculosService, private _http: Http) {
     this.vehiculo = new Vehiculo();

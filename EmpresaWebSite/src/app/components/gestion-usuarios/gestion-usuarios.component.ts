@@ -1,22 +1,40 @@
 import { Component, OnInit } from '@angular/core';
+import { Usuario } from '../../models/usuario';
+import { UsuariosService } from '../../services/usuarios.service';
 
 @Component({
   selector: 'app-gestion-usuarios',
   templateUrl: './gestion-usuarios.component.html',
-  styleUrls: ['./gestion-usuarios.component.css']
+  styleUrls: ['./gestion-usuarios.component.css'],
+  providers: [UsuariosService]
 })
 export class GestionUsuariosComponent implements OnInit {
+  public usuario: Usuario;
+  public usuarios: Array<Usuario>;
+  public filterQuery = '';
+  public rowsOnPage = 4;
+  public sortBy = 'nombres';
+  public sortOrder = 'asc';
+  public btnAgregar: boolean;
+  public btnModificar: boolean;
+  public userExiste: Boolean = false;
 
-  constructor() { }
+  constructor(private servicio: UsuariosService) {
+    this.usuario = new Usuario();
+    this.usuarios = new Array<Usuario>();
+    this.btnAgregar = true;
+    this.btnModificar = false;
+    this.mostrarUsuarios();
+   }
 
   ngOnInit() {
   }
 
   public mostrarUsuarios() {
-    this.servicio.getPasajes().subscribe(
+    this.servicio.getUsuarios().subscribe(
       result => {
-        this.pasajes = JSON.parse(result.pasajes);
-        console.log(this.pasajes);
+        this.usuarios = JSON.parse(result.usuarios);
+        console.log(this.usuarios);
       },
       error => {
         alert('Error en la petición');
@@ -24,15 +42,31 @@ export class GestionUsuariosComponent implements OnInit {
     );
   }
 
-  public guardarPasaje() {
-    this.calcularPrecio();
-    // console.log(this.pasaje);
-    this.servicio.createPasaje(this.pasaje).subscribe(
+  public consultarUsuario() {
+    this.servicio.getUsuarios().subscribe(
+      result => {
+        const usuarios = JSON.parse(result.usuarios);
+         const user = usuarios.filter(function (item) {
+          return item.usuario === this.usuario.usuario;
+        })[0];
+        if (user !== null) {
+          this.userExiste = true;
+        } else {
+          this.userExiste = false;
+        }
+      },
+      error => {
+        alert('Error en la petición');
+      }
+    );
+  }
+
+  public guardarUsuario() {
+    this.servicio.createUsuario(this.usuario).subscribe(
       data => {
       console.log('envio ok');
-      this.mostrarPasajes();
-      this.pasaje = new Pasaje();
-      this.seleccion = '';
+      this.mostrarUsuarios();
+      this.usuario = new Usuario();
         return true;
       },
       error => {
@@ -42,25 +76,21 @@ export class GestionUsuariosComponent implements OnInit {
     );
   }
 
-  public elegirPasaje(pas: Pasaje) {
-    this.pasaje = new Pasaje();
-    this.pasaje = pas;
-    this.btnVenta = false;
+  public elegirUsuario(user: Usuario) {
+    this.usuario = new Usuario();
+    this.usuario = user;
+    this.btnAgregar = false;
     this.btnModificar = true;
-    this.seleccion = this.categorias.filter(function (item) {
-      return item.desc === pas.descuento;
-    })[0];
   }
 
-  public editarPasaje() {
-    this.servicio.editPasaje(this.pasaje).subscribe(
+  public editarUsuario() {
+    this.servicio.editUsuario(this.usuario).subscribe(
       data => {
         console.log('modificado correctamente.');
-        this.mostrarPasajes();
-        this.btnVenta = true;
+        this.mostrarUsuarios();
+        this.btnAgregar = true;
         this.btnModificar = false;
-        this.pasaje = new Pasaje();
-        this.seleccion = '';
+        this.usuario = new Usuario();
         return true;
       },
       error => {
@@ -71,11 +101,11 @@ export class GestionUsuariosComponent implements OnInit {
     );
   }
 
-  public eliminarPasaje(pas: Pasaje) {
-    this.servicio.deletePasaje(pas).subscribe(
+  public eliminarUsuario(user: Usuario) {
+    this.servicio.deleteUsuario(user).subscribe(
       data => {
         console.log('borrado correctamente.');
-        this.mostrarPasajes();
+        this.mostrarUsuarios();
         return true;
       },
       error => {
@@ -87,12 +117,11 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
   public limpiarCampos() {
-    this.pasaje = new Pasaje();
-    this.seleccion = '';
+    this.usuario = new Usuario();
   }
 
   public enviarFormulario() {
-    if (this.btnVenta) {this.guardarPasaje();
-    } else { this.editarPasaje(); }
+    if (this.btnAgregar) {this.guardarUsuario();
+    } else { this.editarUsuario(); }
   }
 }

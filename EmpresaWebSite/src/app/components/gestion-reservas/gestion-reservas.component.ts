@@ -15,10 +15,11 @@ export class GestionReservasComponent implements OnInit {
   public reserva: Reserva;
   public usuario: Usuario;
   public reservas: Array<Reserva>;
+  public usuarios: Array<Usuario>;
   public vehiculos: Array<Vehiculo>;
   public filterQuery = '';
   public rowsOnPage = 4;
-  public sortBy = 'fechaRenta';
+  public sortBy = 'nombres';
   public sortOrder = 'asc';
   public btnAgregar: boolean;
   public btnModificar: boolean;
@@ -28,9 +29,11 @@ export class GestionReservasComponent implements OnInit {
     this.reserva = new Reserva();
     this.usuario = new Usuario();
     this.reservas = new Array<Reserva>();
+    this.usuarios = new Array<Usuario>();
     this.vehiculos = new Array<Vehiculo>();
     this.mostrarReservas();
     this.mostrarVehiculos();
+    this.mostrarUsuarios();
     this.btnAgregar = true;
     this.btnModificar = false;
   }
@@ -52,8 +55,19 @@ export class GestionReservasComponent implements OnInit {
   public mostrarVehiculos() {
     this.servicio.getVehiculos().subscribe(
       result => {
-        this.vehiculos = JSON.parse(result.vehiclos);
+        this.vehiculos = JSON.parse(result.vehiculos);
         console.log(this.vehiculos);
+      },
+      error => {
+        alert('Error en la petición');
+      }
+    );
+  }
+
+  public mostrarUsuarios() {
+    this.servicio.getUsuarios().subscribe(
+      result => {
+        this.usuarios = JSON.parse(result.usuarios);
       },
       error => {
         alert('Error en la petición');
@@ -78,6 +92,15 @@ export class GestionReservasComponent implements OnInit {
     );
   }
 
+  public cambiarEstado(item) {
+    this.reserva = item;
+    if (item.estado === 'Aceptado') {
+      this.reserva.estado = 'Pendiente';
+    } else {
+      this.reserva.estado = 'Aceptado';
+    }
+  }
+
   public editarReserva() {
     // seteo nuevamente la fecha actual para el msj modificado
     this.servicio.editReserva(this.reserva).subscribe(
@@ -98,8 +121,10 @@ export class GestionReservasComponent implements OnInit {
   }
 
   public actualizarFecha() {
-    const f = this.fech.split('-');
+    if (this.fech !== null) {
+      const f = this.fech.split('-');
     this.reserva.fechaRenta = new Date(f[0], f[1] - 1, f[2], 10, 0, 0);
+    }
   }
 
   public mostrarFecha() {
@@ -139,7 +164,7 @@ export class GestionReservasComponent implements OnInit {
     );
   }
 
-  public modalRserva() {
+  public modalReserva() {
     this.reserva = new Reserva();
     this.btnAgregar = true;
     this.btnModificar = false;

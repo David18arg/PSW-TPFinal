@@ -1,5 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {DataTableModule} from 'angular2-datatable';
+import { DataFilterPipe } from './pipes/data-filter.pipe';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/layout/header/header.component';
@@ -32,9 +35,11 @@ import { FormsModule } from '@angular/forms';
     ReservaComponent,
     GestionUsuariosComponent,
     NovedadesComponent,
-    RegistroComponent
+    RegistroComponent,
+    DataFilterPipe
   ],
   imports: [
+    DataTableModule,
     BrowserModule,
     AppRoutingModule,
     HttpModule,

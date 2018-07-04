@@ -26,7 +26,7 @@ export class UsuariosService {
     .map((res: Response) => res.json());
   }
 
-  deleteUsaurio(usuario: Usuario) {
+  deleteUsuario(usuario: Usuario) {
     // utilizo el metodo delete de http que es el configurado en el deleteAction de Symfony
     return this._http.delete('http://localhost/EmpresaWebService/web/app_dev.php/usuario/delete/' + usuario.id)
     .map((res: Response) => res.json());

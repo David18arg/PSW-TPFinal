@@ -9,30 +9,25 @@ import { ReservasService } from '../../services/reservas.service';
   styleUrls: ['./reserva.component.css']
 })
 export class ReservaComponent implements OnInit {
+  public reserva: Reserva;
+  public reservas: Array<Reserva>;
+  public filterQuery = '';
+  public rowsOnPage = 4;
+  public sortBy = '';
+  public sortOrder = 'asc';
+  public btnAgregar: boolean;
+  public btnModificar: boolean;
 
   constructor(private servicio: ReservasService,
-    public authenticationService: AuthenticationService
-) { }
+    public authenticationService: AuthenticationService) { }
 
   ngOnInit() {
   }
 
-  public mostrarCategorias() {
-    this.servicio.getCategorias().subscribe(
+  public mostrarReservas() {
+    this.servicio.getReservas().subscribe(
       result => {
-        this.categorias = JSON.parse(result.categorias);
-      },
-      error => {
-        alert('Error en la petición');
-      }
-    );
-  }
-
-  public mostrarInscripciones() {
-    this.servicio.getInscripciones().subscribe(
-      result => {
-        this.inscripciones = JSON.parse(result.inscripciones);
-        console.log(this.inscripciones);
+        this.reservas = JSON.parse(result.reservas);
       },
       error => {
         alert('Error en la petición');
@@ -41,13 +36,13 @@ export class ReservaComponent implements OnInit {
   }
 
   public guardarInscripcion() {
-    this.servicio.createInscripcion(this.inscripcion).subscribe(
+    this.reserva.fechaRenta = new Date();
+    this.servicio.createReserva(this.reserva).subscribe(
       data => {
         console.log('envio ok');
-        console.log(this.inscripcion);
-        this.mostrarInscripciones();
-        this.inscripcion = new Inscripcion();
-        this.fech = null;
+        console.log(this.reserva);
+        this.mostrarReservas();
+        this.reserva = new Reserva();
         return true;
       },
       error => {
@@ -57,15 +52,14 @@ export class ReservaComponent implements OnInit {
     );
   }
 
-  public editarInscripcion() {
+  public editarReserva() {
     // seteo nuevamente la fecha actual para el msj modificado
-    this.servicio.editInscripcion(this.inscripcion).subscribe(
+    this.servicio.editReserva(this.reserva).subscribe(
       data => {
         console.log('modificado correctamente.');
         // actualizo la tabla de mensajes
-        this.mostrarInscripciones();
-        this.inscripcion = new Inscripcion();
-        this.fech = null;
+        this.mostrarReservas();
+        this.reserva = new Reserva();
         return true;
       },
       error => {
@@ -76,38 +70,15 @@ export class ReservaComponent implements OnInit {
     );
   }
 
-  public actualizarFecha() {
-    const f = this.fech.split('-');
-    this.inscripcion.fecha = new Date(f[0], f[1] - 1, f[2], 10, 0, 0);
+  public seleccionarReserva(res: Reserva) {
+    this.reserva = res;
   }
 
-  public mostrarFecha() {
-    /* .stringify(): de objeto javascript a cadena JSON, y .parse(): de cadena JSON a objecto javascript */
-    const fechaStr = JSON.stringify(this.inscripcion.fecha);
-    this.inscripcion.fecha = JSON.parse(fechaStr, (key, value) => {
-      if (key === 'timestamp') {
-        const par: any = new Date(value * 999.9894).toISOString().substring(0, 10);
-        const f = par.split('-');
-        this.fech = f[0] + '-' + f[1] + '-' + f[2];
-      } return value;
-    });
-  }
-
-  public seleccionarInscripcion(ins: Inscripcion) {
-    this.inscripcion = ins;
-    this.mostrarFecha();
-    this.btnAgregar = false;
-    this.btnModificar = true;
-    this.inscripcion.categoria = this.categorias.filter(function (item) {
-      return item.nombre === ins.categoria.nombre;
-    })[0];
-  }
-
-  public eliminarInscripcion(ins: Inscripcion) {
-    this.servicio.deleteInscripcion(ins).subscribe(
+  public eliminarReserva(res: Reserva) {
+    this.servicio.deleteReserva(res).subscribe(
       data => {
         console.log('borrado correctamente.');
-        this.mostrarInscripciones();
+        this.mostrarReservas();
         return true;
       },
       error => {
@@ -118,15 +89,4 @@ export class ReservaComponent implements OnInit {
     );
   }
 
-  public modalInscripcion() {
-    this.inscripcion = new Inscripcion();
-    this.btnAgregar = true;
-    this.btnModificar = false;
-    this.fech = null;
-  }
-
-  public enviarFormulario() {
-    if (this.btnAgregar) {this.guardarInscripcion();
-    } else { this.editarInscripcion(); }
-  }
 }

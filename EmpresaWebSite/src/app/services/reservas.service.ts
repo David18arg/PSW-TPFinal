@@ -17,6 +17,12 @@ export class ReservasService {
     .map(res => res.json());
   }
 
+  getUsuarios() {
+    // petición por get a esa url de un api rest de empresa de pasajes
+    return this._http.get('http://localhost/EmpresaWebService/web/app_dev.php/usuario/')
+    .map(res => res.json());
+  }
+
   getVehiculos() {
     // petición por get a esa url de un api rest de empresa de pasajes
     return this._http.get('http://localhost/EmpresaWebService/web/app_dev.php/vehiculo/')

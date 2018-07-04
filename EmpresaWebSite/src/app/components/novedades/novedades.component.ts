@@ -1,21 +1,38 @@
 import { Component, OnInit } from '@angular/core';
+import { Novedad } from '../../models/novedad';
+import { Usuario } from '../../models/usuario';
+import { Reserva } from '../../models/reserva';
+import { NovedadesService } from '../../services/novedades.service';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-novedades',
   templateUrl: './novedades.component.html',
-  styleUrls: ['./novedades.component.css']
+  styleUrls: ['./novedades.component.css'],
+  providers: [NovedadesService]
 })
 export class NovedadesComponent implements OnInit {
+  public novedad: Novedad;
+  public novedades: Array<Novedad>;
+  public reservas: Array<Reserva>;
+  public usuario: Usuario;
 
-  constructor() { }
+  constructor(private servicio: NovedadesService, public authenticationService: AuthenticationService) {
+    this.usuario = authenticationService.userLogged;
+    this.novedad = new Novedad();
+    this.novedades = new Array<Novedad>();
+    this.reservas = new Array<Reserva>();
+    this.mostrarNovedades();
+    this.mostrarReservas();
+   }
 
   ngOnInit() {
   }
 
-  public mostrarCategorias() {
-    this.servicio.getCategorias().subscribe(
+  public mostrarNovedades() {
+    this.servicio.getNovedades().subscribe(
       result => {
-        this.categorias = JSON.parse(result.categorias);
+        this.novedades = JSON.parse(result.novedades);
       },
       error => {
         alert('Error en la petición');
@@ -23,11 +40,12 @@ export class NovedadesComponent implements OnInit {
     );
   }
 
-  public mostrarInscripciones() {
-    this.servicio.getInscripciones().subscribe(
+  public mostrarReservas() {
+    this.servicio.getReservas().subscribe(
       result => {
-        this.inscripciones = JSON.parse(result.inscripciones);
-        console.log(this.inscripciones);
+        this.reservas = JSON.parse(result.reservas);
+        this.reservas = this.reservas.filter(
+          reserva => reserva.usuario === this.usuario);
       },
       error => {
         alert('Error en la petición');
@@ -35,14 +53,14 @@ export class NovedadesComponent implements OnInit {
     );
   }
 
-  public guardarInscripcion() {
-    this.servicio.createInscripcion(this.inscripcion).subscribe(
+  public guardarNovedad() {
+    this.novedad.fechaMsj = new Date();
+    this.servicio.createNovedad(this.novedad).subscribe(
       data => {
         console.log('envio ok');
-        console.log(this.inscripcion);
-        this.mostrarInscripciones();
-        this.inscripcion = new Inscripcion();
-        this.fech = null;
+        console.log(this.novedad);
+        this.mostrarNovedades();
+        this.novedad = new Novedad();
         return true;
       },
       error => {
@@ -52,15 +70,15 @@ export class NovedadesComponent implements OnInit {
     );
   }
 
-  public editarInscripcion() {
+  public editarNovedad() {
+    this.novedad.fechaMsj = new Date();
     // seteo nuevamente la fecha actual para el msj modificado
-    this.servicio.editInscripcion(this.inscripcion).subscribe(
+    this.servicio.editNovedad(this.novedad).subscribe(
       data => {
         console.log('modificado correctamente.');
         // actualizo la tabla de mensajes
-        this.mostrarInscripciones();
-        this.inscripcion = new Inscripcion();
-        this.fech = null;
+        this.mostrarNovedades();
+        this.novedad = new Novedad();
         return true;
       },
       error => {
@@ -71,38 +89,15 @@ export class NovedadesComponent implements OnInit {
     );
   }
 
-  public actualizarFecha() {
-    const f = this.fech.split('-');
-    this.inscripcion.fecha = new Date(f[0], f[1] - 1, f[2], 10, 0, 0);
+  public seleccionarNovedad(nov: Novedad) {
+    this.novedad = nov;
   }
 
-  public mostrarFecha() {
-    /* .stringify(): de objeto javascript a cadena JSON, y .parse(): de cadena JSON a objecto javascript */
-    const fechaStr = JSON.stringify(this.inscripcion.fecha);
-    this.inscripcion.fecha = JSON.parse(fechaStr, (key, value) => {
-      if (key === 'timestamp') {
-        const par: any = new Date(value * 999.9894).toISOString().substring(0, 10);
-        const f = par.split('-');
-        this.fech = f[0] + '-' + f[1] + '-' + f[2];
-      } return value;
-    });
-  }
-
-  public seleccionarInscripcion(ins: Inscripcion) {
-    this.inscripcion = ins;
-    this.mostrarFecha();
-    this.btnAgregar = false;
-    this.btnModificar = true;
-    this.inscripcion.categoria = this.categorias.filter(function (item) {
-      return item.nombre === ins.categoria.nombre;
-    })[0];
-  }
-
-  public eliminarInscripcion(ins: Inscripcion) {
-    this.servicio.deleteInscripcion(ins).subscribe(
+  public eliminarNovedad(nov: Novedad) {
+    this.servicio.deleteNovedad(nov).subscribe(
       data => {
         console.log('borrado correctamente.');
-        this.mostrarInscripciones();
+        this.mostrarNovedades();
         return true;
       },
       error => {
@@ -111,18 +106,6 @@ export class NovedadesComponent implements OnInit {
         return false;
       }
     );
-  }
-
-  public modalInscripcion() {
-    this.inscripcion = new Inscripcion();
-    this.btnAgregar = true;
-    this.btnModificar = false;
-    this.fech = null;
-  }
-
-  public enviarFormulario() {
-    if (this.btnAgregar) {this.guardarInscripcion();
-    } else { this.editarInscripcion(); }
   }
 
 }
