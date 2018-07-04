@@ -18,12 +18,12 @@ export class VehiculosService {
   }
 
   createVehiculo(vehiculo: Vehiculo) {
-    const headers = new Headers({ 'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    const body = JSON.stringify(vehiculo);
+    // const headers = new Headers({ 'Content-Type': 'application/json'});
+    // const options = new RequestOptions({headers: headers});
+    // const body = JSON.stringify(vehiculo);
     console.log('entro service create');
-    return this._http.post('http://localhost/EmpresaWebService/web/app_dev.php/vehiculo/new', body, options)
-    .map((res: Response) => res.json());
+    return this._http.post('http://localhost/EmpresaWebService/web/app_dev.php/vehiculo/new', vehiculo)
+    .map((res: Response) => res.json() );
   }
 
   deleteVehiculo(vehiculo: Vehiculo) {

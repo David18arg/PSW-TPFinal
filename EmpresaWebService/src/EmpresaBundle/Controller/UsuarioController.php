@@ -20,6 +20,42 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 class UsuarioController extends Controller
 {
     /**
+     * Validate user.
+     *
+     * @Route("/authenticate", name="usuario_authenticate")
+     * @Method({"GET", "POST"})
+     */
+    public function authenticateAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $request->request->replace($data);
+        //creamos un usuario
+        $usuario = $request->request->get('usuario');
+        $password = $request->request->get('password');
+
+        $criteria = array('usuario' => $usuario, 'password' => $password);
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository("EmpresaBundle:Usuario")->findBy($criteria);
+		
+        if($user != null){
+            $resultUsuario = $user[0];
+        }else{
+            //retorno un usuario sin datos
+            $resultUsuario = new Usuario();
+        }
+        //genero la respuesta hacia el cliente
+        $response = new Response();
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $response->setContent(json_encode(array(
+        'usuario' => $serializer->serialize($resultUsuario, 'json'),
+        )));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
      * Lists all usuario entities.
      *
      * @Route("/", name="usuario_index")

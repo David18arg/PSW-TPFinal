@@ -11,13 +11,13 @@ export class AuthenticationService {
 
   constructor(private http: Http) { }
 
-  login(username: string, password: string) {
+  public login(usuario: string, password: string) {
     return this.http.post('http://localhost/EmpresaWebService/web/app_dev.php/usuario/authenticate',
-     JSON.stringify({ username: username, password: password }))
+     JSON.stringify({ usuario: usuario, password: password }))
         .map(res => res.json());
   }
 
-  logout() {
+  public logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.userLogged = new Usuario();

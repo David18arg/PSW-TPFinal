@@ -3,6 +3,7 @@
 namespace EmpresaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Vehiculo
@@ -22,9 +23,9 @@ class Vehiculo
     private $id;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="patente", type="integer")
+     * @ORM\Column(name="patente", type="string", length=255)
      */
     private $patente;
 
@@ -46,6 +47,7 @@ class Vehiculo
      * @var string
      *
      * @ORM\Column(name="pathimagen", type="string", length=255)
+     * @Assert\File(mimeTypes={"image/jpeg"})
      */
     private $pathimagen;
 
@@ -70,7 +72,7 @@ class Vehiculo
     /**
      * Set patente
      *
-     * @param integer $patente
+     * @param string $patente
      *
      * @return Vehiculo
      */
@@ -84,7 +86,7 @@ class Vehiculo
     /**
      * Get patente
      *
-     * @return int
+     * @return string
      */
     public function getPatente()
     {

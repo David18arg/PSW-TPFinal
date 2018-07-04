@@ -11,9 +11,15 @@ export class ReservasService {
 
   constructor(private _http: Http) { }
 
-  getNovedades() {
+  getReservas() {
     // petición por get a esa url de un api rest de empresa de pasajes
     return this._http.get('http://localhost/EmpresaWebService/web/app_dev.php/reserva/')
+    .map(res => res.json());
+  }
+
+  getVehiculos() {
+    // petición por get a esa url de un api rest de empresa de pasajes
+    return this._http.get('http://localhost/EmpresaWebService/web/app_dev.php/vehiculo/')
     .map(res => res.json());
   }
 

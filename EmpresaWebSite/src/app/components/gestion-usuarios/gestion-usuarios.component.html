@@ -1,3 +1,88 @@
-<p>
-  gestion-usuarios works!
-</p>
+<div class="card bg-dark text-white">
+  <div class="card-header">
+    <h5 class="card-title m-0">Punto - 3 Venta de Pasajes</h5>
+  </div>
+  <div class="card-body">
+    <form class="form" #empresaForm="ngForm" name="empresaForm" (ngSubmit)="enviarFormulario(); empresaForm.reset()">
+      <div class="form-group row">
+        <label for="dni" class="col-md-6">DNI :</label>
+        <input id="dni" minlength="7" maxlength="8" #dni="ngModel" required type="text" name="dni" class="col-md-6 form-control" [(ngModel)]="pasaje.dni">
+        <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="alert alert-danger">
+          <div *ngIf="dni.errors.required">
+            DNI requerido
+          </div>
+          <div *ngIf="dni.errors.minlength">
+            DNI debe contener almenos 7 digitos.
+          </div>
+          <div *ngIf="dni.errors.maxlength">
+            DNI debe contener maximo 8 digitos.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="precio" class="col-md-6">Precio :</label>
+        <input id="precio" minlength="1" maxlength="12" #precio="ngModel" required type="number" name="precio" class="col-md-6 form-control" [(ngModel)]="pasaje.precio" (ngModelChange)="calcularPrecio()">
+        <div *ngIf="precio.invalid && (precio.dirty || precio.touched)" class="alert alert-danger">
+          <div *ngIf="precio.errors.required">
+            Precio requerido
+          </div>
+          <div *ngIf="precio.errors.minlength">
+            Precio debe contener almenos 1 digito.
+          </div>
+          <div *ngIf="precio.errors.maxlength">
+            Precio no debe superar los 12 caracteres.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="categoria" class="col-md-6" for="seleccion">Categoria del pasajero: </label>
+        <select id="categoria" name="categoria" required #categoria="ngModel" class="col-md-6 form-control" [(ngModel)]="seleccion" (ngModelChange)="calcularPrecio()">
+          <option [ngValue]="cat" *ngFor="let cat of categorias">{{cat.tipo}}</option>
+        </select>
+        <div [hidden]="categoria.valid || categoria.pristine" class="alert alert-danger">
+          Categoria del pasajero requerida
+        </div>
+      </div>
+      <div>
+        <button *ngIf="btnVenta" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Venta</button>
+        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Modificar Venta</button>
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" (click)="limpiarCampos()">Limpiar Campos</button>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer p-2">
+    <div *ngIf="msjDetalleVisible" class="row">
+      <label class="col-12 ">Detalle de Transaccion :</label>
+      <label class="col-12 ">DNI : {{ pasaje.dni }}</label>
+      <label class="col-12 ">Categoria : {{ seleccion.tipo }}</label>
+      <label class="col-12 ">Descuento : {{ pasaje.descuento }} %</label>
+      <label class="col-12 ">PrecioFinal: $ {{ pasaje.precioFinal }}</label>
+    </div>
+  </div>
+</div>
+
+<div class="card-body table-responsive p-0 m-0">
+  <table class="table table-striped table-bordered table-hover text-center">
+    <thead>
+      <tr class="thead-dark">
+        <th style="width: 20%">DNI</th>
+        <th style="width: 20%">Precio</th>
+        <th style="width: 20%">Descuento</th>
+        <th style="width: 20%">PrecioFinal</th>
+        <th style="width: 20%">Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of pasajes" class="text-light font-weight-bold">
+        <td scope="col">{{item.dni}}</td>
+        <td scope="col">$ {{item.precio}}</td>
+        <td scope="col">{{item.descuento}} %</td>
+        <td scope="col">{{item.precioFInal}}</td>
+        <td>
+          <button class="btn btn-outline-warning my-2 my-sm-0" (click)="elegirPasaje(item)">Modificar</button>
+          <button class="btn btn-outline-danger my-2 my-sm-0" (click)="eliminarPasaje(item)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -17,6 +17,8 @@ import { NovedadesService } from './services/novedades.service';
 import { ReservasService } from './services/reservas.service';
 import { UsuariosService } from './services/usuarios.service';
 import { VehiculosService } from './services/vehiculos.service';
+import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { VehiculosService } from './services/vehiculos.service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpModule,
+    FormsModule
   ],
   providers: [
     AuthenticationService,

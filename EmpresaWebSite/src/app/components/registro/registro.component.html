@@ -1,3 +1,101 @@
-<p>
-  registro works!
-</p>
+<div class="card bg-dark text-white">
+  <div class="card-header">
+    <h5 class="card-title m-0">Registro de Usuario</h5>
+  </div>
+  <div class="card-body">
+    <form class="form" #empresaForm="ngForm" name="empresaForm" (ngSubmit)="enviarFormulario(); empresaForm.reset()">
+    <div class="form-group row">
+        <label for="usuario" class="col-md-6">Usuario :</label>
+        <input id="usuario" minlength="4" #usuario="ngModel" required type="text" name="email" class="col-md-6 form-control" [(ngModel)]="usuario.usuario">
+        <div *ngIf="usuario.invalid && (usuario.dirty || usuario.touched)" class="alert alert-danger">
+          <div *ngIf="usuario.errors.required">
+              Usuario requerido
+          </div>
+          <div *ngIf="usuario.errors.minlength">
+              Usuario debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="password" class="col-md-6">Contraseña :</label>
+        <input id="password" minlength="4" #password="ngModel" required type="password" name="email" class="col-md-6 form-control" [(ngModel)]="usuario.password">
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+          <div *ngIf="password.errors.required">
+              Contraseña requerido
+          </div>
+          <div *ngIf="password.errors.minlength">
+              Contraseña debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="apellido" class="col-md-6">Apellido :</label>
+        <input id="apellido" minlength="4" #apellido="ngModel" required type="text" name="apellido" class="col-md-6 form-control" [(ngModel)]="usuario.apellido">
+        <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="alert alert-danger">
+          <div *ngIf="precio.errors.required">
+            Apellido requerido
+          </div>
+          <div *ngIf="precio.errors.minlength">
+            Apellido debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="nombres" class="col-md-6">Nombres :</label>
+        <input id="nombres" minlength="4" #nombres="ngModel" required type="text" name="nombres" class="col-md-6 form-control" [(ngModel)]="usuario.nombres">
+        <div *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)" class="alert alert-danger">
+          <div *ngIf="nombres.errors.required">
+            Nombres requerido
+          </div>
+          <div *ngIf="nombres.errors.minlength">
+            Nombres debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="dni" class="col-md-6">DNI :</label>
+        <input id="dni" minlength="7" maxlength="8" #dni="ngModel" required type="text" name="dni" class="col-md-6 form-control" [(ngModel)]="usuario.dni">
+        <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="alert alert-danger">
+          <div *ngIf="dni.errors.required">
+            DNI requerido
+          </div>
+          <div *ngIf="dni.errors.minlength">
+            DNI debe contener almenos 7 digitos.
+          </div>
+          <div *ngIf="dni.errors.maxlength">
+            DNI debe contener maximo 8 digitos.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="email" class="col-md-6">Email :</label>
+        <input id="email" minlength="4" #email="ngModel" required type="text" name="email" class="col-md-6 form-control" [(ngModel)]="usuario.email">
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+          <div *ngIf="email.errors.required">
+            Email requerido
+          </div>
+          <div *ngIf="email.errors.minlength">
+            Email debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="telefono" class="col-md-6">Telefono :</label>
+        <input id="telefono" minlength="4" #telefono="ngModel" required type="text" name="telefono" class="col-md-6 form-control" [(ngModel)]="usuario.telefono">
+        <div *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)" class="alert alert-danger">
+          <div *ngIf="telefono.errors.required">
+            Telefono requerido
+          </div>
+          <div *ngIf="telefono.errors.minlength">
+            Telefono debe contener almenos 4 digito.
+          </div>
+        </div>
+      </div>
+      <div>
+        <button *ngIf="btnVenta" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Venta</button>
+        <button *ngIf="btnModificar" type="submit" class="btn btn-outline-success my-2 my-sm-0" [disabled]="!empresaForm.form.valid" (click)="empresaForm.onSubmit()">Modificar Venta</button>
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" (click)="limpiarCampos()">Limpiar Campos</button>
+      </div>
+    </form>
+  </div>
+</div>

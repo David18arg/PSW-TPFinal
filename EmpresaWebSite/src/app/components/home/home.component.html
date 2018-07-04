@@ -1,3 +1,22 @@
-<p>
-  home works!
-</p>
+<div class="container-fluid">
+  <h2>Galeria</h2>
+  <section class="row">
+    <div *ngFor="let vehic of vehiculos" class="col-md-6 container">
+      <div class="card bg-dark text-light">
+        <div class="row ">
+          <div class="col-md-4">
+            <img src="http://localhost/EmpresaWebService/web/uploads/images/{{vehic.pathimagen}}" class="w-100">
+          </div>
+          <div class="col-md-8 px-3">
+            <div class="card-block px-3">
+              <h4 class="card-title text-danger">{{vehic.marca}}</h4>
+              <p class="card-text">Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
+              <a href="#" class="btn btn-primary">Read More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
